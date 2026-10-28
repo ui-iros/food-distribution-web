@@ -3,7 +3,7 @@
 <body><main>
 <nav class="tabs" aria-label="Viewer mode"><button class="active">Single network</button><button>Multi-network benchmark</button></nav>
 <section class="controls" aria-label="Simulation controls">
-<div class="row"><label>Layout<select><option>Indonesia benchmark</option><option>Random layout</option><option>Custom layout</option></select></label><button>Apply &amp; reset</button><button>Load config</button><button>Save config</button></div>
+<div class="row"><label>Layout<select id="layout"><option value="6x2">Indonesia benchmark · 6 regions × 2 commodities</option></select></label><button>Apply &amp; reset</button><button>Load config</button><button>Save config</button></div>
 <div class="row settings"><label>Regions<input type="number" value="6" disabled></label><label>Commodities<input type="number" value="2" disabled></label><label>Seed<input id="seed" type="number" value="42"></label><span class="hint">Changes take effect with Apply &amp; reset.</span></div>
 <details><summary>Environment settings</summary><p>FoodDistribution-v0 · supply, demand, price, cash reserve, climate and pest dynamics.</p></details>
 <div class="row"><label>Algorithm<select id="algorithm"><option>Random</option><option selected>PPO policy</option><option>A2C policy</option><option>SAC policy</option><option>TD3 policy</option></select></label><strong id="policy">PPO policy</strong><label>Action<select><option selected>Policy</option><option>Northbound trade</option><option>Southbound trade</option><option>Eastbound trade</option><option>Westbound trade</option><option>No trade</option></select></label><button id="reset">Reset</button><button id="play">Play</button><button id="step">Step</button><button>Save PNG</button></div>
