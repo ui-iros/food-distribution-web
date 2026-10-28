@@ -1,46 +1,15 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Food Distribution Gym simulation viewer">
-  <title>Food Distribution Gym — Simulation Viewer</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <main class="app-shell" aria-label="Food Distribution simulation viewer">
-    <section id="launcher" class="launcher">
-      <div class="launcher-mark">FD</div>
-      <h1>Food Distribution RL</h1>
-      <p class="muted">Interactive browser viewer for <code>FoodDistribution-v0</code></p>
-      <div class="launch-grid">
-        <label>Mode<select id="mode"><option value="live">Live simulation</option><option value="replay">Replay preview</option></select></label>
-        <label>Config<select id="config"><option value="indonesia">Indonesia · 6 cities · 2 commodities</option><option value="compact">Compact · 4 cities · 2 commodities</option></select></label>
-        <label>Seed<input id="seed" type="number" value="42" min="0"></label>
-        <label>FPS<input id="fps" type="number" value="10" min="1" max="60"></label>
-        <label>Max steps<input id="maxSteps" type="number" value="100" min="1" max="1000"></label>
-      </div>
-      <button id="start" class="primary">START SIMULATION</button>
-      <p class="hint">The browser viewer mirrors the Python pygame viewer’s controls and state panels.</p>
-    </section>
-
-    <section id="viewer" class="viewer hidden">
-      <header class="topbar">
-        <div><strong>Food Distribution RL</strong><span class="subtle"> · <code>FoodDistribution-v0</code></span></div>
-        <div class="metrics"><span>Step <b id="stepText">0/100</b></span><span>Reward <b id="rewardText">—</b></span><span>Cumulative <b id="cumText">0.00</b></span><span id="statusText" class="status">PAUSED</span></div>
-      </header>
-      <div class="toolbar">
-        <button id="pause" class="primary">▶ Play</button><button id="step">Step</button><button id="reset">Reset</button><button id="zoomOut">−</button><button id="zoomIn">+</button><button id="zoomReset">Reset view</button><button id="help">Help</button>
-        <label class="commodity">Commodity<select id="commodity"><option value="0">Rice</option><option value="1">Corn</option></select></label>
-      </div>
-      <div class="workspace">
-        <div class="map-panel"><svg id="map" viewBox="0 0 900 600" role="img" aria-label="Food distribution network map"><title>Food distribution network</title></svg><div class="legend"><span><i class="dot surplus"></i>Supply exceeds demand</span><span><i class="dot shortage"></i>Shortage</span><span><i class="line"></i>Trade flow</span></div></div>
-        <aside id="details" class="details"><div class="empty">Click a city to inspect state, demand, price, cash reserve, and the last action.</div></aside>
-      </div>
-      <footer class="bottombar"><span id="commodityHint">[1] Rice &nbsp; [2] Corn</span><span>Space: play/pause · ←/→: step · R: reset · +/-: zoom · 0: reset view · H: help</span></footer>
-    </section>
-    <div id="helpOverlay" class="overlay hidden"><div class="help-card"><button id="closeHelp" class="close">×</button><h2>Controls</h2><p><b>Space</b> play/pause &nbsp; <b>←/→</b> step &nbsp; <b>R</b> reset &nbsp; <b>+/-</b> zoom &nbsp; <b>0</b> reset view &nbsp; <b>H</b> help</p><p>Click a city for details. Drag the map to pan and use the wheel to zoom.</p></div></div>
-  </main>
-  <script src="app.js"></script>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FoodDistribution-v0 | Policy viewer</title><link rel="stylesheet" href="style.css"></head>
+<body><main>
+<nav class="tabs" aria-label="Viewer mode"><button class="active">Single network</button><button>Multi-network benchmark</button></nav>
+<section class="controls" aria-label="Simulation controls">
+<div class="row"><label>Layout<select><option>Indonesia benchmark</option><option>Random layout</option><option>Custom layout</option></select></label><button>Apply &amp; reset</button><button>Load config</button><button>Save config</button></div>
+<div class="row settings"><label>Regions<input type="number" value="6" disabled></label><label>Commodities<input type="number" value="2" disabled></label><label>Seed<input id="seed" type="number" value="42"></label><span class="hint">Changes take effect with Apply &amp; reset.</span></div>
+<details><summary>Environment settings</summary><p>FoodDistribution-v0 · supply, demand, price, cash reserve, climate and pest dynamics.</p></details>
+<div class="row"><label>Algorithm<select id="algorithm"><option>Random</option><option selected>PPO policy</option><option>A2C policy</option><option>SAC policy</option><option>TD3 policy</option></select></label><strong id="policy">PPO policy</strong><label>Action<select><option selected>Policy</option><option>Northbound trade</option><option>Southbound trade</option><option>Eastbound trade</option><option>Westbound trade</option><option>No trade</option></select></label><button id="reset">Reset</button><button id="play">Play</button><button id="step">Step</button><button>Save PNG</button></div>
+<div class="speed"><span>Speed</span><input id="speed" type="range" min="1" max="20" value="4"><output id="speedOut">4.0 steps/s</output></div>
+</section>
+<div id="notice" class="notice" role="status">Ready · click Play or Step to start</div>
+<section class="sim" aria-label="Food distribution simulator"><header><h1>FoodDistribution-v0</h1><div><b>REGIONAL FOOD NETWORK</b><span class="tag">CLIMATE + PEST</span></div><p>Indonesia benchmark · six regions · rice and corn</p></header><div class="sim-grid"><div class="map-wrap"><svg id="map" viewBox="0 0 720 620" role="img" aria-label="Food distribution network map"><title>Regional food distribution network</title></svg><div class="local"><b>Selected region details</b><span id="localText">Click a region on the map</span></div></div><aside class="status"><div class="status-title"><h2>Run Status</h2><span id="runState">READY</span></div><div class="progress-line"><span>Food availability</span><b id="availability">82%</b></div><progress id="progress" max="100" value="82" aria-label="Food availability"></progress><dl><div><dt>Last Action</dt><dd id="lastAction">Reset</dd></div><div><dt>Selected region</dt><dd id="selectedRegion">—</dd></div><div><dt>Shortage rate</dt><dd id="shortage">0.0%</dd></div><div><dt>Last Reward</dt><dd id="reward">0.0</dd></div><div><dt>Step</dt><dd id="stepText">0/100</dd></div><div><dt>Episode Return</dt><dd id="return">0.0</dd></div></dl><h2>Map Key</h2><div class="key"><span><i class="key-node surplus"></i>Supply surplus</span><span><i class="key-node shortage"></i>Food shortage</span><span><i class="key-flow"></i>Trade flow</span><span><i class="key-climate"></i>Climate/pest event</span></div><div class="controller"><span>Controller</span><strong id="controller">PPO policy</strong><small>Trained checkpoint · seed 42</small><small id="controllerState">At initial state</small></div></aside></div></section>
+<footer>Runs in your browser · Policy viewer for <a href="https://github.com/ui-iros/food-distribution-gym">food-distribution-gym</a></footer>
+</main><script src="app.js"></script></body></html>
